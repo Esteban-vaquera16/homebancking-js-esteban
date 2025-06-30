@@ -15,6 +15,16 @@ const inputAlias = document.getElementById("alias");
 const inputMontoTransferir = document.getElementById("monto-transferir");
 const inputMontoGenerico = document.getElementById("monto-generico");
 
+const botonCerrarSesion = document.getElementById("btn-cerrar-sesion");
+
+botonCerrarSesion.addEventListener("click", ()=>{
+    const modal = new bootstrap.Modal(document.getElementById("modalCerrarSesion"));
+    modal.show();
+})
+document.getElementById("confirmarCerrarSesion").addEventListener("click", () => {
+    sessionStorage.removeItem("usuarioActual");
+    window.location.href = "index.html";
+});
 function mostrarInfoUsuario() {
     const usuarioActual = JSON.parse(sessionStorage.getItem("usuarioActual"));
     

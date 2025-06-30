@@ -27,9 +27,28 @@ body {
     width: 100%;
     height: 100px;
     display: flex;
-    justify-content: start;
+    justify-content: space-between;
     align-items: center;
     background-color: #1E4E72;
+}
+#barra-navegacion{
+    display: flex;
+    align-items: center;
+}
+#btn-cerrar-sesion{
+  padding: 10px;
+  background-color: red;
+  margin: 10px;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+#btn-cerrar-sesion:hover{
+    background-color: rgb(195, 26, 26);
 }
 .nav-bar img{
     width: 80px;
@@ -110,7 +129,17 @@ font-size: 2.5rem;
     display: flex;
     gap: 20px;
 }
+/*Estilos modal*/
+#modalMensaje .modal-content {
+    border: none;
+    border-radius: 1rem;
+    font-family: 'Source Sans 3', sans-serif;
+}
 
+#modalMensaje .modal-body {
+    padding: 1.5rem;
+    color: #333;
+}
 /* INFO USUARIO */
 #div-mostrar-info {
     width: 35%;
