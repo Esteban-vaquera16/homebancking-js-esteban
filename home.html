@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- link bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="./estilos/style.css">
+    <!-- LINK DE CSS -->
+     <link rel="stylesheet" href="./estilos/style.css">
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+     <!-- FUENTE LETRA -->
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="nav-bar">
+        <img src="./herramientas/logo-banco.png" alt="">
+        <h2>Banco Monteros</h2>
+    </nav>
+    <main class="main-home">
+        <section id="primera-seccion">
+            <div id="div-mostrar-info">
+            </div>
+            <div id="div-funcion-botones">
+    
+            </div>
+        </section>
+        <section id="segunda-seccion">
+            <div id="contenedor-formularios">
+            <!-- Los formularios están ocultos inicialmente -->
+                <form id="form-transferencia" class="formulario oculto">
+                    <label for="alias">Alias destino:</label>
+                    <input type="text" id="alias">
+                    <label for="monto-transferir">Monto:</label>
+                    <input type="number" id="monto-transferir">
+                    <div id="mensaje-error-transferencia" class="text-danger"></div>
+                    <button type="submit">Confirmar transferencia</button>
+                </form>
+
+                <form id="form-generico" class="formulario oculto">
+                    <label for="monto-generico">Monto:</label>
+                    <input type="number" id="monto-generico">
+                    <div id="mensaje-error" class="text-danger mt-2"></div>
+                    <button type="submit" id="btn-confirmar-generico">Confirmar</button>
+                </form>
+            </div>
+            <div id="mostrar-movimientos">
+                <div id="tus-movimientos"></div>
+                <button id="btn-limpiar-movimientos">Ocultar</button>
+            </div>
+        </section>
+    </main>
+    
+    <!-- mostar modal -->
+    <div class="modal fade" id="modalMensaje" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Mensaje</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="modalTexto">
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- scripts de js -->
+     <script src="./javaScript/app.js"></script>
+     <script src="./javaScript/login.js"></script>
+    <script src="./javaScript/home.js"></script>
+
+    <!-- script de bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
