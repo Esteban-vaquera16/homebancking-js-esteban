@@ -69,7 +69,10 @@ btnConfirmarSaldo.addEventListener("click", () => {
     localStorage.setItem("usuarios", JSON.stringify(usuarios));
     sessionStorage.setItem("usuarioActual", JSON.stringify(usuarioRecienCreado));
 
-    window.location.href = "home.html";
+    document.querySelector(".main-login").classList.add("oculto");
+    document.getElementById("form-saldo-inicial").classList.add("oculto");
+    document.getElementById("main-home").classList.remove("oculto");
+    main();
 });
 btnIniciarSesion.addEventListener("click", () => {
     const nombre = nombreInput.value.trim();
@@ -88,7 +91,10 @@ btnIniciarSesion.addEventListener("click", () => {
 
     if (usuarioEncontrado) {
         sessionStorage.setItem("usuarioActual", JSON.stringify(usuarioEncontrado));
-        window.location.href = "home.html";
+        document.querySelector(".main-login").classList.add("oculto");
+        document.getElementById("form-saldo-inicial").classList.add("oculto");
+        document.getElementById("main-home").classList.remove("oculto");
+        main();
     } else {
         mostrarMensaje("Usuario o contraseña incorrectos.");
     }

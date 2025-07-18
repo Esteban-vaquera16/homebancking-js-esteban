@@ -2,8 +2,8 @@ const usuarioGuardado = JSON.parse(sessionStorage.getItem("usuarioActual"));
 const usuarioActual = usuarioGuardado ? reconstruirUsuario(usuarioGuardado) : null;
 
 if (!usuarioActual) {
-    mostrarModal("Acceso no autorizado.");
-    window.location.href = "login.html";
+    document.getElementById("main-home").classList.add("oculto");
+    document.querySelector(".main-login").classList.remove("oculto");
 }
 const infoUsuario = document.getElementById("div-mostrar-info");
 const contenedorBotones = document.getElementById("div-funcion-botones");
@@ -23,20 +23,43 @@ botonCerrarSesion.addEventListener("click", ()=>{
 })
 document.getElementById("confirmarCerrarSesion").addEventListener("click", () => {
     sessionStorage.removeItem("usuarioActual");
+    sessionStorage.removeItem("fotoUsuario"); 
     window.location.href = "index.html";
 });
-function mostrarInfoUsuario() {
-    const usuarioActual = JSON.parse(sessionStorage.getItem("usuarioActual"));
-    
+async function mostrarInfoUsuario() {
     if (!usuarioActual) return;
-    
-    infoUsuario.innerHTML = `
-    <h1>Hola ${usuarioActual.nombre}!</h1>
-    <h2>Dinero disponible</h2>
-        <h3>$${usuarioActual.cuenta.saldo.toFixed(2)}</h3>
-        `;
+
+    let foto;
+
+    // Si ya existe la foto en sessionStorage, la usamos
+    const fotoGuardada = sessionStorage.getItem("fotoUsuario");
+    if (fotoGuardada) {
+        foto = fotoGuardada;
+    } else {
+        // Si no hay foto, pedimos una nueva
+        try {
+            const res = await fetch("https://randomuser.me/api/");
+            const data = await res.json();
+            foto = data.results[0].picture.medium;
+            sessionStorage.setItem("fotoUsuario", foto); // la guardamos
+        } catch (error) {
+            foto = "./herramientas/foto-esteban-vaquera-pareja.jpg";
+        }
     }
-    const botones = [
+
+    infoUsuario.innerHTML = `
+        <div class="div-foto-perfil">
+            <img src="${foto}" alt="Foto usuario" class="foto-perfil">
+        </div>
+        <h1>Hola ${usuarioActual.nombre}!</h1>
+        <div class="div-dinero-usuario">
+            <h2>Dinero disponible: </h2>
+            <h3>$${usuarioActual.cuenta.saldo.toFixed(2)}</h3>
+        </div>
+    `;
+}
+
+const botones = [
         {
             id:'transferir',
         image: './herramientas/logo-transferencia.png',
@@ -97,18 +120,21 @@ function mostrarFormularios(id){
     ocultarFormularios();
     document.getElementById(id).classList.remove("oculto")
 }
-function actualizarStorage(usuario){
+function actualizarStorage(usuario) {
     sessionStorage.setItem("usuarioActual", JSON.stringify(usuario));
+
     let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
-    const index = usuarios.findIndex(u => u.id === usuario.id)
-    if(index !== -1){
+    const index = usuarios.findIndex(u => u.id === usuario.id);
+    if (index !== -1) {
         usuarios[index] = usuario;
         localStorage.setItem("usuarios", JSON.stringify(usuarios));
     }
+
     mostrarInfoUsuario();
 }
 
-function asignarEventodAFormularios(){
+
+function asignarEventosAFormularios(){
     //para el formulario de trasnferencia
     formTransferencia.addEventListener("submit", (e) =>{
         e.preventDefault();
@@ -228,11 +254,19 @@ function asignarEventosBotones(){
     });
 }
 
-function main(){
+function main() {
+    const usuarioGuardado = JSON.parse(sessionStorage.getItem("usuarioActual"));
+    if (!usuarioGuardado) {
+        mostrarModal("Acceso no autorizado.");
+        document.getElementById("main-home").classList.add("oculto");
+        document.querySelector(".main-login").classList.remove("oculto");
+        return;
+    }
+
+    window.usuarioActual = reconstruirUsuario(usuarioGuardado);
+
     mostrarInfoUsuario();
     CreadoraDeBotonesFuncionales();
-    asignarEventodAFormularios();
+    asignarEventosAFormularios();
 }
-document.addEventListener("DOMContentLoaded", () => {
-    main();
-});
+

@@ -33,10 +33,87 @@
             <button type="button" id="btn-confirmar-saldo">Confirmar saldo</button>
         </form>
     </main>
+    <main id="main-home" class="main-home oculto">
+      <div id="div-salir">
+            <button id="btn-cerrar-sesion">Cerrar sesion</button>
+        </div>
+        <section id="primera-seccion">
+            <div id="div-mostrar-info">
+            </div>
+            <div id="div-funcion-botones">
+    
+            </div>
+        </section>
+        <section id="segunda-seccion">
+            <div id="contenedor-formularios">
+            <!-- Los formularios están ocultos inicialmente -->
+                <form id="form-transferencia" class="formulario oculto">
+                    <label for="alias">Alias destino:</label>
+                    <input type="text" id="alias">
+                    <label for="monto-transferir">Monto:</label>
+                    <input type="number" id="monto-transferir">
+                    <div id="mensaje-error-transferencia" class="text-danger"></div>
+                    <button type="submit">Confirmar transferencia</button>
+                </form>
+
+                <form id="form-generico" class="formulario oculto">
+                    <label for="monto-generico">Monto:</label>
+                    <input type="number" id="monto-generico">
+                    <div id="mensaje-error" class="text-danger mt-2"></div>
+                    <button type="submit" id="btn-confirmar-generico">Confirmar</button>
+                </form>
+            </div>
+            <div id="mostrar-movimientos">
+                <div id="tus-movimientos"></div>
+                <button id="btn-limpiar-movimientos">Ocultar</button>
+            </div>
+        </section>
+    </main>
+
+
+    <!-- Modal de mensajes personalizado -->
+<div class="modal fade" id="modalMensaje" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content shadow-lg border-0 rounded-4">
+      <div class="modal-header bg-primary text-white rounded-top-4">
+        <h5 class="modal-title"><i class="bi bi-info-circle-fill me-2"></i>Mensaje del sistema</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body fs-5 text-center" id="modalTexto">
+        <!-- Aquí se inyecta el mensaje desde JS -->
+      </div>
+      <div class="modal-footer d-flex justify-content-center">
+        <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de confirmación de cierre de sesión -->
+<div class="modal fade" id="modalCerrarSesion" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">Cerrar sesión</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        ¿Estás seguro de que querés cerrar sesión?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" id="confirmarCerrarSesion">Cerrar sesión</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
     <!-- Tu script de login -->
     <script src="./javaScript/app.js" defer></script>
     <script src="./javaScript/login.js" defer></script>
+    <script src="./javaScript/home.js" defer></script>
 
 
     <!-- script de bootstrap -->
