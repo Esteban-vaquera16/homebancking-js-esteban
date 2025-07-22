@@ -9,10 +9,11 @@ class Usuario {
 }
 
 class CuentaBancaria{
-    constructor(titular, saldoInicial = 0){
+    constructor(titular, saldoInicial = 0,dolaresIniciales = 0){
         this.titular = titular;
         this.saldo = saldoInicial;
         this.deudas = 0;
+        this.dolares = dolaresIniciales;
         this.movimientos = [];
     }
 
@@ -52,7 +53,6 @@ class CuentaBancaria{
         mostrarMensaje("No tenés deudas pendientes.");
         return;
     }
-
     if (isNaN(montoPago) || montoPago <= 0){
         mostrarMensaje("Monto inválido.");
         return;
@@ -72,6 +72,34 @@ class CuentaBancaria{
     this.deudas -= montoPago;
     this.agregarMovimientos("pago de deuda", montoPago);
     }
+    comprarDolares(montoEnDolares, cotizacion) {
+    const costoEnPesos = montoEnDolares * cotizacion;
+    if (this.saldo >= costoEnPesos) { 
+        this.saldo -= costoEnPesos;
+        this.dolares += montoEnDolares;
+        this.movimientos.push({
+            tipo: `Compra de USD ${montoEnDolares.toFixed(2)} a $${cotizacion}`,
+            monto: costoEnPesos,
+            fecha: new Date().toLocaleDateString()
+        });
+    } else {
+        throw new Error("saldo insuficiente para comprar los dolares.");
+    }
+}
+    venderDolares(montoUSD, cotizacion) {
+    if (montoUSD > this.dolares) {
+        throw new Error("No tenés suficientes dólares.");
+    }
+    this.dolares -= montoUSD;
+    const pesosObtenidos = montoUSD * cotizacion;
+    this.saldo += pesosObtenidos;
+    this.movimientos.push({
+        tipo: `Venta de USD ${montoUSD.toFixed(2)} a $${cotizacion}`,
+        monto: pesosObtenidos,
+        fecha: new Date().toLocaleDateString()
+    });
+}
+
 }
 function cargarUsuarios() {
     const data = JSON.parse(localStorage.getItem("usuarios")) || [];
@@ -80,7 +108,8 @@ function cargarUsuarios() {
         const usuario = new Usuario(u.nombre, u.contrasena, u.id);
         const cuenta = new CuentaBancaria(
             usuario.nombre,
-            cuentaInfo.saldo || 0
+            cuentaInfo.saldo || 0,
+            cuentaInfo.dolares || 0
         );
         cuenta.movimientos = cuentaInfo.movimientos || [];
         cuenta.deudas = cuentaInfo.deudas || 0;
@@ -90,7 +119,11 @@ function cargarUsuarios() {
 }
 function reconstruirUsuario(obj) {
     const usuario = new Usuario(obj.nombre, obj.contrasena, obj.id);
-    const cuenta = new CuentaBancaria(obj.cuenta.titular, obj.cuenta.saldo);
+    const cuenta = new CuentaBancaria(
+        obj.cuenta.titular,
+        obj.cuenta.saldo || 0,
+        obj.cuenta.dolares || 0 
+    );
     cuenta.deudas = obj.cuenta.deudas || 0;
     cuenta.movimientos = obj.cuenta.movimientos || [];
     usuario.cuenta = cuenta;

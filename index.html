@@ -57,6 +57,9 @@
                 </form>
 
                 <form id="form-generico" class="formulario oculto">
+                    <div id="cotizacion-dolar" class="info-cotizacion oculto">
+                      <p id="texto-cotizacion"></p>
+                    </div>
                     <label for="monto-generico">Monto:</label>
                     <input type="number" id="monto-generico">
                     <div id="mensaje-error" class="text-danger mt-2"></div>
@@ -71,50 +74,13 @@
     </main>
 
 
-    <!-- Modal de mensajes personalizado -->
-<div class="modal fade" id="modalMensaje" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content shadow-lg border-0 rounded-4">
-      <div class="modal-header bg-primary text-white rounded-top-4">
-        <h5 class="modal-title"><i class="bi bi-info-circle-fill me-2"></i>Mensaje del sistema</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-      </div>
-      <div class="modal-body fs-5 text-center" id="modalTexto">
-        <!-- Aquí se inyecta el mensaje desde JS -->
-      </div>
-      <div class="modal-footer d-flex justify-content-center">
-        <button type="button" class="btn btn-primary px-4" data-bs-dismiss="modal">Aceptar</button>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- Tu script de login -->
+<script src="./javaScript/app.js" defer></script>
+<script src="./javaScript/login.js" defer></script>
+<script src="./javaScript/home.js" defer></script>
 
-<!-- Modal de confirmación de cierre de sesión -->
-<div class="modal fade" id="modalCerrarSesion" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header bg-danger text-white">
-        <h5 class="modal-title">Cerrar sesión</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-      </div>
-      <div class="modal-body">
-        ¿Estás seguro de que querés cerrar sesión?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-danger" id="confirmarCerrarSesion">Cerrar sesión</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-    <!-- Tu script de login -->
-    <script src="./javaScript/app.js" defer></script>
-    <script src="./javaScript/login.js" defer></script>
-    <script src="./javaScript/home.js" defer></script>
-
+<!-- script de sweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- script de bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

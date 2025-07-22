@@ -26,12 +26,6 @@ function mostrarMensaje(texto) {
         mensajeErorTransferencia.style.display = "none";
     }, 5000); // desaparece a los 5 segundos
 }
-function mostrarModal(mensaje) {
-    document.getElementById("modalTexto").textContent = mensaje;
-    const modal = new bootstrap.Modal(document.getElementById("modalMensaje"));
-    modal.show();
-}
-
 btnCrearCuenta.addEventListener("click", () => {
     const nombre = nombreInput.value.trim();
     const contrasena = contrasenaInput.value;
@@ -52,6 +46,12 @@ btnCrearCuenta.addEventListener("click", () => {
     const nuevoUsuario = new Usuario(nombre, contrasena, id);
     usuarioRecienCreado = nuevoUsuario;
 
+    Swal.fire({
+        title: "Cuenta creada con exito.",
+        icon: "success",
+        draggable: true
+    });
+
     formSaldoInicial.classList.remove("oculto");
     document.querySelector(".formulario").classList.add("oculto"); 
 });
@@ -59,7 +59,10 @@ btnConfirmarSaldo.addEventListener("click", () => {
     const saldoInicial = Number(inputSaldoInicial.value);
 
     if (isNaN(saldoInicial) || saldoInicial < 0) {
-        mostrarMensaje("Monto inválido. Se asignará $0 por defecto.");
+        Swal.fire({
+        title: "Monto invalido. Se asignara $0 por defecto",
+        draggable: true
+    });
     } else {
         usuarioRecienCreado.cuenta.depositar(saldoInicial);
     }
@@ -90,6 +93,11 @@ btnIniciarSesion.addEventListener("click", () => {
     );
 
     if (usuarioEncontrado) {
+        Swal.fire({
+        title: `Bienvenido a banco Monteros ${nombre}!!`,
+        icon: "success",
+        draggable: true
+    });
         sessionStorage.setItem("usuarioActual", JSON.stringify(usuarioEncontrado));
         document.querySelector(".main-login").classList.add("oculto");
         document.getElementById("form-saldo-inicial").classList.add("oculto");

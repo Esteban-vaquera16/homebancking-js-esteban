@@ -1,7 +1,7 @@
 const usuarioGuardado = JSON.parse(sessionStorage.getItem("usuarioActual"));
-const usuarioActual = usuarioGuardado ? reconstruirUsuario(usuarioGuardado) : null;
+window.usuarioActual = usuarioGuardado ? reconstruirUsuario(usuarioGuardado) : null;
 
-if (!usuarioActual) {
+if (!window.usuarioActual) {
     document.getElementById("main-home").classList.add("oculto");
     document.querySelector(".main-login").classList.remove("oculto");
 }
@@ -17,49 +17,36 @@ const inputMontoGenerico = document.getElementById("monto-generico");
 
 const botonCerrarSesion = document.getElementById("btn-cerrar-sesion");
 
-botonCerrarSesion.addEventListener("click", ()=>{
-    const modal = new bootstrap.Modal(document.getElementById("modalCerrarSesion"));
-    modal.show();
-})
-document.getElementById("confirmarCerrarSesion").addEventListener("click", () => {
-    sessionStorage.removeItem("usuarioActual");
-    sessionStorage.removeItem("fotoUsuario"); 
-    window.location.href = "index.html";
+botonCerrarSesion.addEventListener("click", () => {
+    Swal.fire({
+        title: '¿Cerrar sesión?',
+        text: "Vas a cerrar tu sesión actual.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, cerrar sesión',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            sessionStorage.removeItem("usuarioActual");
+            window.location.href = "index.html"; 
+        }
+    });
 });
-async function mostrarInfoUsuario() {
+function mostrarInfoUsuario() {
     if (!usuarioActual) return;
 
-    let foto;
-
-    // Si ya existe la foto en sessionStorage, la usamos
-    const fotoGuardada = sessionStorage.getItem("fotoUsuario");
-    if (fotoGuardada) {
-        foto = fotoGuardada;
-    } else {
-        // Si no hay foto, pedimos una nueva
-        try {
-            const res = await fetch("https://randomuser.me/api/");
-            const data = await res.json();
-            foto = data.results[0].picture.medium;
-            sessionStorage.setItem("fotoUsuario", foto); // la guardamos
-        } catch (error) {
-            foto = "./herramientas/foto-esteban-vaquera-pareja.jpg";
-        }
-    }
-
+    
     infoUsuario.innerHTML = `
-        <div class="div-foto-perfil">
-            <img src="${foto}" alt="Foto usuario" class="foto-perfil">
-        </div>
-        <h1>Hola ${usuarioActual.nombre}!</h1>
-        <div class="div-dinero-usuario">
-            <h2>Dinero disponible: </h2>
-            <h3>$${usuarioActual.cuenta.saldo.toFixed(2)}</h3>
-        </div>
+    <h1>Hola ${usuarioActual.nombre}!</h1>
+    <div class="div-dinero-usuario">
+    <h2>Dinero disponible: </h2>
+    <h3>$${usuarioActual.cuenta.saldo.toFixed(2)}</h3>
+    <h2>Dolares disponible: </h2>
+    <h3>USD ${usuarioActual.cuenta.dolares.toFixed(2)}</h3>
+    </div>
     `;
 }
-
-const botones = [
+    const botones = [
         {
             id:'transferir',
         image: './herramientas/logo-transferencia.png',
@@ -95,6 +82,18 @@ const botones = [
         image: './herramientas/ver-movimientos.png',
         alt:'ver movimientos del usuario',
         title: 'Ver movimientos',
+    },
+    {
+        id:'comprar-dolares',
+        image: './herramientas/ver-movimientos.png',
+        alt:'comprar dolares',
+        title: 'Comprar dolares',
+    },
+    {
+        id:'vender-dolares',
+        image: './herramientas/ver-movimientos.png',
+        alt:'vender dolares',
+        title: 'Vender dolares',
     }
 ]
 
@@ -105,7 +104,6 @@ function CreadoraDeBotonesFuncionales(){
             <img src=${e.image} alt=${e.alt}>
             <h3>${e.title}</h3>
             </button>
-            
             `
         })
     asignarEventosBotones()
@@ -134,85 +132,181 @@ function actualizarStorage(usuario) {
 }
 
 
-function asignarEventosAFormularios(){
-    //para el formulario de trasnferencia
-    formTransferencia.addEventListener("submit", (e) =>{
+async function asignarEventosAFormularios() {
+    // Transferencia
+    formTransferencia.addEventListener("submit", (e) => {
         e.preventDefault();
         const alias = inputAlias.value.trim();
         const monto = Number(inputMontoTransferir.value);
 
-        if(!alias || isNaN(monto) || monto <= 0){
-            mostrarMensaje("datos invalidos.");
+        if (!alias || isNaN(monto) || monto <= 0) {
+            Swal.fire({
+            icon: "error",
+            title: "Datos invalidos",
+            });
             return;
         }
 
-        if(monto > usuarioActual.cuenta.saldo){
-            mostrarMensaje("saldo insuficiente.")
+        if (monto > usuarioActual.cuenta.saldo) {
+            Swal.fire({
+            icon: "error",
+            title: "Saldo insuficiente.",
+            });
             return;
         }
 
         usuarioActual.cuenta.saldo -= monto;
         usuarioActual.cuenta.movimientos.push({
-            tipo: `transferencia a ${alias}`,
+            tipo: `Transferencia a ${alias}`,
             monto,
             fecha: new Date().toLocaleDateString()
         });
 
         actualizarStorage(usuarioActual);
-        mostrarModal(`transferencia a ${alias}. Realizada con exito`);
+        Swal.fire({
+            icon: "success",
+            title:`Transferencia a ${alias} realizada con exito.`,
+            });
         formTransferencia.reset();
         ocultarFormularios();
     });
-    //para el formulario generico
-    formGenerico.addEventListener("submit", (e) =>{
+
+    // Formulario genérico
+    formGenerico.addEventListener("submit", async (e) => {
         e.preventDefault();
         const monto = Number(inputMontoGenerico.value);
 
         if (isNaN(monto) || monto <= 0) {
-            mostrarMensaje("Monto inválido");
+            Swal.fire({
+            icon: "error",
+            title: "Monto invalido.",
+            });
             return;
         }
 
-        if (formGenerico.dataset.funcion === "extraer") {
-            if (monto > usuarioActual.cuenta.saldo) {
-            mostrarMensaje("Saldo insuficiente");
-            return;
-            }
-            mostrarModal(`Realiazaste una extraccion de ${monto}. En efectivo`);
-            usuarioActual.cuenta.extraer(monto);
-        }
-        else if(formGenerico.dataset.funcion === "prestamo"){
-            if(monto > 20000){
-                mostrarMensaje("maximo prestamo permitido: $20000.")
-                return;
-            }
-            const deudaTotal = monto + monto * 0.15;
-            mostrarModal(`se te acreditaron $${monto}. por un prestamo`)
-            usuarioActual.cuenta.realizarPrestamo(monto,deudaTotal)
-        }else if(formGenerico.dataset.funcion === "pagarDeuda"){
-            if(monto > usuarioActual.cuenta.deudas){
-                mostrarMensaje("Estas ingresando un valor mayor a tu deuda")
-                return;
-            }
-            if(usuarioActual.cuenta.deudas)
-            if(isNaN(monto) || monto <= 0 ){
-                mostrarMensaje("Monto invalido");
-                return;
-            }
-            if(monto > usuarioActual.cuenta.saldo){
-                mostrarMensaje("Saldo insuficiente.")
-                return;
-            }
-            mostrarModal(`Deuda de $${monto} pagada con exito.`)
-            usuarioActual.cuenta.realizarPagoDeuda(monto);
-            
-        }
+        try {
+            switch (formGenerico.dataset.funcion) {
+                case "extraer":
+                    if (monto > usuarioActual.cuenta.saldo) {
+                        Swal.fire({
+                        icon: "error",
+                        title: "Saldo insuficiente.",
+                        });
+                        return;
+                    }
+                    usuarioActual.cuenta.extraer(monto);
+                    Swal.fire({
+                    icon: "success",
+                    title: `Realizaste una extraccion de ${monto} en efectivo.` ,
+                    });
+                    break;
 
-        actualizarStorage(usuarioActual);
-        formGenerico.reset();
-        ocultarFormularios();
-});
+                case "prestamo":
+                    if (monto > 20000) {
+                        Swal.fire({
+                        icon: "error",
+                        title: `Maximo prestamo de $20000.` ,
+                        });
+                        return;
+                    }
+                    const deudaTotal = monto + monto * 0.15;
+                    usuarioActual.cuenta.realizarPrestamo(monto, deudaTotal);
+                    Swal.fire({
+                    icon: "success",
+                    title: `se te acreditaron ${monto} de un prestamo.` ,
+                    });
+                    break;
+
+                case "pagarDeuda":
+                    if (monto > usuarioActual.cuenta.deudas) {
+                        Swal.fire({
+                        icon: "warning",
+                        title: `Ingresase un monto mayor a tu deuda.` ,
+                        });
+                        return;
+                    }
+                    if (monto > usuarioActual.cuenta.saldo) {
+                        Swal.fire({
+                        icon: "error",
+                        title: "Saldo insuficiente.",
+                        });
+                        return;
+                    }
+                    usuarioActual.cuenta.realizarPagoDeuda(monto);
+                    Swal.fire({
+                        icon: "success",
+                        title: `Deuda de ${monto} pagada con exito`,
+                        });
+                    break;
+
+               case "comprarDolares":
+                   try {
+                        const res = await fetch("https://api.bluelytics.com.ar/v2/latest");
+                        const data = await res.json();
+                        const cotizacionCompra = data.blue.value_buy;
+
+                        usuarioActual.cuenta.comprarDolares(monto, cotizacionCompra);
+                        if (monto > usuarioActual.cuenta.saldo) {
+                            Swal.fire({
+                            icon: "error",
+                            title: "Saldo insuficiente para comprar los dólares.",
+                        });
+                        return;
+                        }
+
+                        Swal.fire({
+                        icon: "success",
+                        title: `Compraste USD ${(monto).toFixed(2)} a $${cotizacionCompra}`,
+                        });
+                         actualizarStorage(usuarioActual);
+
+                    } catch (error) {
+                        Swal.fire({
+                        icon: "error",
+                        title: error.message,
+                        });
+                    }
+                    break;
+
+                case "venderDolares":
+                    const resVenta = await fetch("https://api.bluelytics.com.ar/v2/latest");
+                    const dataVenta = await resVenta.json();
+                    const cotizacionVenta = dataVenta.blue.value_sell;
+
+                    if (monto > usuarioActual.cuenta.dolares) {
+                       Swal.fire({
+                        icon: "error",
+                        title: "No tienes esa cantidad de dolares.",
+                        });
+                        return;
+                    }
+
+                    usuarioActual.cuenta.venderDolares(monto, cotizacionVenta);
+                    Swal.fire({
+                        icon: "success",
+                        title: `Vendiste USD ${monto.toFixed(2)} a $${cotizacionVenta}`,
+                        });
+                    
+                    break;
+            }
+
+            actualizarStorage(usuarioActual);
+            formGenerico.reset();
+            ocultarFormularios();
+
+        } catch (error) {
+            console.error(error);
+            Swal.fire({
+                icon: "error",
+                title: "ocurrio un error al realizar la operacion.",
+            });
+        }
+    });
+    actualizarStorage(usuarioActual);
+    formGenerico.reset();
+    ocultarFormularios();
 }
+
 
 function asignarEventosBotones(){
     document.getElementById("transferir").addEventListener("click", ()=>{
@@ -248,16 +342,51 @@ function asignarEventosBotones(){
         }
     });
 
-        document.getElementById("btn-limpiar-movimientos").addEventListener("click", () => {
+    document.getElementById("btn-limpiar-movimientos").addEventListener("click", () => {
         const divMovimientos = document.getElementById("tus-movimientos");
         divMovimientos.innerHTML = "";
     });
-}
 
+    document.getElementById("comprar-dolares").addEventListener("click", async () => {
+    formGenerico.dataset.funcion = "comprarDolares";
+    mostrarFormularios("form-generico");
+    await mostrarCotizacion("compra");
+    });
+
+    document.getElementById("vender-dolares").addEventListener("click", async () => {
+        formGenerico.dataset.funcion = "venderDolares";
+        mostrarFormularios("form-generico");
+        await mostrarCotizacion("venta")
+    });
+
+}
+async function mostrarCotizacion(tipo) {
+    const divCotizacion = document.getElementById("cotizacion-dolar");
+    const textoCotizacion = document.getElementById("texto-cotizacion");
+
+    try{
+        const res = await fetch("https://api.bluelytics.com.ar/v2/latest");
+        const data = await res.json();
+        const precio = tipo === "compra" ? data.blue.value_buy : data.blue.value_sell;
+
+        textoCotizacion.textContent = tipo === "compra"
+            ? `precio de compra: $${precio}`
+            : `precio de venta: $${precio}`;
+
+        divCotizacion.classList.remove("oculto");
+
+   }catch(error){
+        textoCotizacion.textContent = "no se pudo obtener el precio de dolar."
+        divCotizacion.classList.remove("oculto");
+   }
+}
 function main() {
     const usuarioGuardado = JSON.parse(sessionStorage.getItem("usuarioActual"));
     if (!usuarioGuardado) {
-        mostrarModal("Acceso no autorizado.");
+        Swal.fire({
+        icon: "error",
+        title: "Acceso no autorizado.",
+        });
         document.getElementById("main-home").classList.add("oculto");
         document.querySelector(".main-login").classList.remove("oculto");
         return;
