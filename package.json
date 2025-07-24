@@ -1,0 +1,23 @@
+{
+  "name": "entregable-2-vaquera",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Esteban-vaquera16/homebancking-js-esteban.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Esteban-vaquera16/homebancking-js-esteban/issues"
+  },
+  "homepage": "https://github.com/Esteban-vaquera16/homebancking-js-esteban#readme",
+  "description": "",
+  "dependencies": {
+    "sweetalert2": "^11.22.2"
+  }
+}

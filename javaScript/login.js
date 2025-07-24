@@ -95,7 +95,6 @@ btnIniciarSesion.addEventListener("click", () => {
     if (usuarioEncontrado) {
         Swal.fire({
         title: `Bienvenido a banco Monteros ${nombre}!!`,
-        icon: "success",
         draggable: true
     });
         sessionStorage.setItem("usuarioActual", JSON.stringify(usuarioEncontrado));

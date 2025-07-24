@@ -85,13 +85,13 @@ function mostrarInfoUsuario() {
     },
     {
         id:'comprar-dolares',
-        image: './herramientas/ver-movimientos.png',
+        image: './herramientas/comprar-dolares.png',
         alt:'comprar dolares',
         title: 'Comprar dolares',
     },
     {
         id:'vender-dolares',
-        image: './herramientas/ver-movimientos.png',
+        image: './herramientas/comprar-dolares.png',
         alt:'vender dolares',
         title: 'Vender dolares',
     }
