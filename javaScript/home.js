@@ -256,7 +256,7 @@ async function asignarEventosAFormularios() {
 
                         Swal.fire({
                         icon: "success",
-                        title: `Compraste USD ${(monto).toFixed(2)} a $${cotizacionCompra}`,
+                        title: `Compraste ${(monto).toFixed(2)} USD a $${cotizacionCompra} cada uno.`,
                         });
                          actualizarStorage(usuarioActual);
 
@@ -284,7 +284,7 @@ async function asignarEventosAFormularios() {
                     usuarioActual.cuenta.venderDolares(monto, cotizacionVenta);
                     Swal.fire({
                         icon: "success",
-                        title: `Vendiste USD ${monto.toFixed(2)} a $${cotizacionVenta}`,
+                        title: `Vendiste ${monto.toFixed(2)} USD a $${cotizacionVenta} cada uno.`,
                         });
                     
                     break;
